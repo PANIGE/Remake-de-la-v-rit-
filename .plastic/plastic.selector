@@ -1,0 +1,4 @@
+repository "Remake de la vérité@ze_trousph@cloud"
+  path "/"
+    br "/main"
+    co "/main"
