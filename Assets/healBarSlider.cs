@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class healBarSlider : MonoBehaviour
+public class HealBarSlider : MonoBehaviour
 {
+    public static HealBarSlider Instance { get; private set; }
     public Slider HealSlider;
     /*public Slider EasehealSlider;*/
     public float MaxHealth = 100f;
@@ -14,6 +15,7 @@ public class healBarSlider : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Instance = this;
         Health = MaxHealth;
     }
 
@@ -27,7 +29,7 @@ public class healBarSlider : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.V))
         {
-            takeDamage(10);
+            TakeDamage(10);
         }
         /*if(HealSlider.value != EasehealSlider.value)
         {
@@ -35,7 +37,7 @@ public class healBarSlider : MonoBehaviour
         }*/
     }
 
-    void takeDamage(float damage)
+    public void TakeDamage(float damage)
     {
         Health -= damage;
     }

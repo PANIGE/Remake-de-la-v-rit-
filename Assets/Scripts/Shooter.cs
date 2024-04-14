@@ -42,6 +42,7 @@ public class WatermeloonShooter : MonoBehaviour
                 Vector3 projectileMoveDirection = (projectileVector - transform.position).normalized * projectileSpeed;
 
                 GameObject tempProjectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+                
                 Rigidbody tempRigidbody = tempProjectile.GetComponent<Rigidbody>();
 
                 Destroy(tempProjectile, 20f);
