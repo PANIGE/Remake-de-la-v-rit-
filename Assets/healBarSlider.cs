@@ -10,12 +10,16 @@ public class HealBarSlider : MonoBehaviour
     /*public Slider EasehealSlider;*/
     public float MaxHealth = 100f;
     public float Health;
+    public GameObject youDiedText;
     private float LerpSpeed;
 
     // Start is called before the first frame update
     void Start()
     {
         Instance = this;
+        HealSlider.maxValue = MaxHealth;
+        HealSlider.value = MaxHealth;
+        youDiedText.gameObject.SetActive(false);
         Health = MaxHealth;
     }
 
@@ -29,12 +33,15 @@ public class HealBarSlider : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.V))
         {
-            TakeDamage(10);
+            Health = MaxHealth;
         }
-        /*if(HealSlider.value != EasehealSlider.value)
+
+        if (Health <= 0)
         {
-            EasehealSlider.value = Mathf.Lerp(EasehealSlider.value,Health,LerpSpeed);
-        }*/
+            Health = 1; // to avoid spam
+            Time.timeScale = 0;
+            youDiedText.gameObject.SetActive(true);
+        }
     }
 
     public void TakeDamage(float damage)

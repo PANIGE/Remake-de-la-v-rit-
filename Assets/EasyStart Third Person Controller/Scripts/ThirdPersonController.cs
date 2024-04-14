@@ -34,6 +34,7 @@ public class ThirdPersonController : MonoBehaviour
     bool isJumping = false;
     bool isSprinting = false;
     bool isCrouching = false;
+    bool wasSpriting = false;
 
     // Inputs
     float inputHorizontal;
@@ -44,6 +45,7 @@ public class ThirdPersonController : MonoBehaviour
 
     Animator animator;
     CharacterController cc;
+    EnergySlider energySlider = null;
 
 
     void Start()
@@ -60,7 +62,7 @@ public class ThirdPersonController : MonoBehaviour
     // Update is only being used here to identify keys and trigger animations
     void Update()
     {
-
+        energySlider ??= EnergySlider.Instance;
         // Input checkers
         inputHorizontal = Input.GetAxis("Horizontal");
         inputVertical = Input.GetAxis("Vertical");
@@ -99,9 +101,13 @@ public class ThirdPersonController : MonoBehaviour
         // Handle can jump or not
         if ( inputJump && cc.isGrounded )
         {
-            isJumping = true;
-            // Disable crounching when jumping
-            //isCrouching = false; 
+            if (energySlider.CanDoAction(10))
+            {
+                isJumping = true;
+                energySlider.Energy -= 10;
+                energySlider.Regen = false;
+                energySlider.Regen = true;
+            }
         }
 
         HeadHittingDetect();
@@ -115,8 +121,16 @@ public class ThirdPersonController : MonoBehaviour
 
         // Sprinting velocity boost or crounching desacelerate
         float velocityAdittion = 0;
-        if ( isSprinting )
+        if ( isSprinting && CanSprint())
             velocityAdittion = sprintAdittion;
+        else
+        {
+            if (wasSpriting)
+            {
+                wasSpriting = false;
+                energySlider.Regen = true;
+            }
+        }
         if (isCrouching)
             velocityAdittion =  - (velocity * 0.50f); // -50% velocity
 
@@ -178,6 +192,20 @@ public class ThirdPersonController : MonoBehaviour
         cc.Move( moviment );
 
     }
+
+    private bool CanSprint()
+    {
+        wasSpriting = true;
+        if (energySlider.CanDoAction(15 * Time.deltaTime))
+        {
+            energySlider.Regen = false;
+            energySlider.Energy -= 15 * Time.deltaTime;
+            return true;
+        }
+
+        return false;
+    }
+
 
 
     //This function makes the character end his jump if he hits his head on something

@@ -11,6 +11,7 @@ public class WatermeloonShooter : MonoBehaviour
     private float angleOffset = 0;
 
     private float nextFireTime = 0f;
+    private float nextConeFireTime = 0f;
 
     void Update()
     {
@@ -19,10 +20,29 @@ public class WatermeloonShooter : MonoBehaviour
             FireCircularPattern();
             nextFireTime = Time.time + delay;
         }
+        if (Time.time >= nextConeFireTime)
+        {
+            FireConeAtTargetPlayer();
+            nextConeFireTime = Time.time + delay*10;
+        }
     }
 
-    void FireConePattern()
+    void FireConeAtTargetPlayer()
     {
+        
+        GameObject targetPlayer = GameObject.FindGameObjectWithTag("Player");
+        Vector3 targetPosition = targetPlayer.transform.position + new Vector3(0, 2, 0);
+        Vector3 targetDirection = targetPosition - transform.position;
+
+        for (int i = 0; i < numberOfProjectiles; i++)
+        {
+            GameObject tempProjectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+            Rigidbody tempRigidbody = tempProjectile.GetComponent<Rigidbody>();
+            //adjust velocity to make a circular pattern toward the player using the targetDirection
+            tempRigidbody.velocity = targetDirection.normalized * projectileSpeed * 2 + new Vector3(Mathf.Sin(i * 2 * Mathf.PI / numberOfProjectiles), Mathf.Cos(i * 2 * Mathf.PI / numberOfProjectiles), 0) * projectileSpeed * 0.1f;
+
+            Destroy(tempProjectile, 20f);
+        }
     }
 
     void FireCircularPattern()
