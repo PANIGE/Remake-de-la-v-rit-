@@ -21,9 +21,7 @@ public class PlayerProjectileDestroy : MonoBehaviour
         if (collision.gameObject.tag == "Boss")
         {
             BossLifeBar.Instance.TakeDamage(2);
-            //reduce KB on boss hit to a max of 5
-            
-
+            ScoreManager.Instance.AddScore(10);
         }
         Destroy(gameObject);
     }
