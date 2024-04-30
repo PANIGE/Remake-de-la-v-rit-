@@ -11,13 +11,39 @@ public class BossLifeBar : MonoBehaviour
     public static BossLifeBar Instance { get; private set; }
     public GameObject Boss;
     public Slider Slider;
-    public float BossHealth = 1200;
-    public GameObject winText; 
+    public float BossHealth = 1;
+    public GameObject winText;
+    
+    public GameObject PlayerRoot;
+    public GameObject Boss1Root;
+    public GameObject Boss2Root;
+    public GameObject Boss3Root;
+
+    public GameObject TpLevel2;
+    public GameObject TpLevel3;
+
+    public long BetonHealth = 300;
+    public long ReglisseHealth = 600;
+    public long PastequeHealth = 1200;
+
+    private int currentBoss = 1;
+    private GameObject currentBossRoot;
+
+    private bool loaded = false;
+
+
 
     // Start is called before the first frame update
     void Start()
     {
         Instance = this;
+
+        BossHealth = BetonHealth;
+        Boss1Root.SetActive(true);
+        Boss2Root.SetActive(false);
+        Boss3Root.SetActive(false);
+        currentBossRoot = Boss1Root;
+
         if (Slider != null)
         {
             Slider.maxValue = BossHealth; 
@@ -28,12 +54,16 @@ public class BossLifeBar : MonoBehaviour
         {
             winText.gameObject.SetActive(false); 
         }
+
+        loaded = true;
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+        if (!loaded)
+            return;
+
         if (Math.Abs(Slider.value - BossHealth) > 0.01f)
         {
             Slider.value = Mathf.Lerp(Slider.value, BossHealth, Time.deltaTime * 10); 
@@ -41,12 +71,35 @@ public class BossLifeBar : MonoBehaviour
         
         if (BossHealth <= 0)
         {
-            Destroy(Boss);
-            Time.timeScale = 0; // Freeze game time
-            if (winText != null)
+            currentBossRoot.SetActive(false);
+
+            switch (currentBoss)
             {
-                winText.gameObject.SetActive(true); 
+                case 1:
+                    Boss2Root.SetActive(true);
+                    currentBossRoot = Boss2Root;
+                    BossHealth = ReglisseHealth;
+                    currentBoss = 2;
+                    PlayerRoot.transform.position = TpLevel2.transform.position;
+                    break;
+                case 2:
+                    Boss3Root.SetActive(true);
+                    currentBossRoot = Boss3Root;
+                    BossHealth = PastequeHealth;
+                    currentBoss = 3;
+                    PlayerRoot.transform.position = TpLevel3.transform.position;
+                    break;
+                case 3:
+                    Time.timeScale = 0; // Freeze game time
+                    if (winText != null)
+                    {
+                        winText.gameObject.SetActive(true);
+                    }
+                    return;
+
             }
+
+            Slider.maxValue = BossHealth;
         }
     }
     
