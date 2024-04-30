@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class HealBarSlider : MonoBehaviour
@@ -39,8 +40,8 @@ public class HealBarSlider : MonoBehaviour
         if (Health <= 0)
         {
             Health = 1; // to avoid spam
-            Time.timeScale = 0;
             youDiedText.gameObject.SetActive(true);
+            SceneManager.LoadScene("ScoreSection");
         }
     }
 

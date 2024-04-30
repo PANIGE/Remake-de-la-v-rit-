@@ -28,7 +28,7 @@ public class ScoreManager : MonoBehaviour
 
     private void Update()
     {
-        if (DateTime.Now - LastHitTime > TimeSpan.FromSeconds(4))
+        if (DateTime.Now - LastHitTime > TimeSpan.FromSeconds(3))
         {
             Combo = 0;
             BulletCombo = 0;
